@@ -13,8 +13,14 @@ class LCDUnicode
 
   def encode(text)
     encoded = ''
+    last = nil
     text.each_codepoint do |char|
-      encoded += self._getMapping(char)
+      if char == 0xc3
+        last = 0xc3
+        next
+      end
+      encoded += self._getMapping(char, last)
+      last = nil
     end
 
     return encoded
@@ -29,9 +35,20 @@ class LCDUnicode
   end
 
   protected
-  def _getMapping(char)
-    if @mapping['encoding'].has_key? char
-      mapped = @mapping['encoding'][char]
+  def _getMapping(char, last = nil)
+
+
+    if @mapping['encoding'].has_key?(char) or
+      (@mapping['encoding']['multibyte'].has_key?(last) and
+       @mapping['encoding']['multibyte'][last].has_key?(char))
+
+      if last != nil
+        pp "#{last.chr} #{char.chr} | #{last} #{char}"
+        mapped = @mapping['encoding']['multibyte'][last][char]
+      else
+        mapped = @mapping['encoding'][char]
+      end
+
       if mapped.is_a? Integer
         c = mapped.chr
       else
