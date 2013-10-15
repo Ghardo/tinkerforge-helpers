@@ -15,8 +15,8 @@ class LCDUnicode
     encoded = ''
     last = nil
     text.each_codepoint do |char|
-      if char == 0xc3
-        last = 0xc3
+      if @mapping['encoding']['multibyte'].has_key?(char)
+        last = char
         next
       end
       encoded += self._getMapping(char, last)
@@ -36,7 +36,6 @@ class LCDUnicode
 
   protected
   def _getMapping(char, last = nil)
-
 
     if @mapping['encoding'].has_key?(char) or
       (@mapping['encoding']['multibyte'].has_key?(last) and
