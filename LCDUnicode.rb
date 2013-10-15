@@ -63,7 +63,7 @@ class LCDUnicode
   def _initCustomCharacters(lcd)
      index = 0
      @mapping['custom'].each do |custom|
-      lcd.device.set_custom_character index, custom[1]
+      lcd.set_custom_character index, custom[1]
       index += 1
      end
   end
